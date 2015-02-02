@@ -115,6 +115,7 @@ function my_init() {
     // CS148: INITIAL GETTING FAMILIAR CODE  (END HERE)
 
     upness = 0;
+    jitter = 0.02;
 
 }
 
@@ -183,7 +184,7 @@ function my_animate() {
 
     // CS148: INITIAL GETTING FAMILIAR CODE  (START HERE)
 
-    var jitter = 0.02;
+    jitter = 0.02;
 
     // keyboard is threejs helper for reading keyboard state
     if (keyboard.pressed("x")) {
@@ -192,8 +193,15 @@ function my_animate() {
     } else if (keyboard.pressed("z")) {
         textbar.innerHTML = "zzzzzz";  // stop jittering the pieces
         jitter = 0;
+    } else if (keyboard.pressed("r")) {
+        // reset:
+        textbar.innerHTML = "resetting";
+        upness = 0;    
     } else {
         // make the pieces jitter, and say something interesting
+
+        // I wasn't sure if you wanted toggle or hold-to-stop,
+        // but the code setup suggested the latter
         textbar.innerHTML = "babuza";
     }
 
