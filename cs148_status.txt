@@ -1,5 +1,6 @@
 46: Alex Varga
- Assignment 1: PENDING
+ Assignment 1: CHECK
+ comment: good work
  
  Assignment 2: PENDING
  
