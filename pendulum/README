@@ -6,3 +6,11 @@ in HTML5/JavaScript and threejs
 
 Change view by click-and-drag mouse
 
+
+
+STUDENT NOTES:
+
++ I wrote a lot of things sub-optimally to make it easier to follow the implementations from the equations.
++ I used variable time steps with Date.now().
++ Press keys 1-4 to change integrator, or p to pause.
+
