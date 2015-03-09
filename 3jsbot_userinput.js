@@ -101,40 +101,61 @@ function user_input() {
 /* CS148: user input for joint selection */
 
 function change_active_link_down() {
-    if (typeof robot.links[robot.joints[active_joint].child].children !== 'undefined') {
-        robot.joints[active_joint].display_geom.material.opacity = 1.0; 
+    // if (typeof robot.links[robot.joints[active_joint].child].children !== 'undefined') {
+    //     robot.joints[active_joint].display_geom.material.opacity = 1.0; 
 
-        active_link = robot.joints[active_joint].child;
-        active_joint = robot.links[active_link].children[0];
+    //     active_link = robot.joints[active_joint].child;
+    //     active_joint = robot.links[active_link].children[0];
 
-        robot.joints[active_joint].display_geom.material.opacity = 0.5; 
+    //     robot.joints[active_joint].display_geom.material.opacity = 0.5; 
+    // }
+
+    if (active_link !== null) {
+        active_joint.display_geom.material.opacity = 1.0; 
+
+        active_link = active_joint.childLink;
+        active_joint = active_link.childJoints[0];
+
+        active_joint.display_geom.material.opacity = 0.5;
+    } else {
+        active_link = robot.baseLink;
+        active_joint = active_link.childJoints[0];
+
+        active_joint.display_geom.material.opacity = 0.5; 
     }
 }
 
 function change_active_link_up() {
-    if (active_link !== robot.base) {
-        robot.joints[active_joint].display_geom.material.opacity = 1.0; 
+    if (active_link === null) {
 
-        active_joint = robot.links[active_link].parent;
-        active_link = robot.joints[active_joint].parent;
+    } else if (active_link !== robot.baseLink) {
+        active_joint.display_geom.material.opacity = 1.0; 
 
-        robot.joints[active_joint].display_geom.material.opacity = 0.5; 
+        active_joint = active_link.parentJoint;
+        active_link = active_joint.parentLink;
+
+        active_joint.display_geom.material.opacity = 0.5; 
+    } else {
+        active_joint.display_geom.material.opacity = 1.0; 
+
+        active_joint = null;
+        active_link = null;
     }
 }
 
 function change_active_joint_next() {
-    robot.joints[active_joint].display_geom.material.opacity = 1.0; 
+    active_joint.display_geom.material.opacity = 1.0; 
 
-    active_joint = robot.links[active_link].children[(robot.links[active_link].children.indexOf(active_joint)+1) % robot.links[active_link].children.length];
+    active_joint = active_link.childJoints[(active_link.childJoints.indexOf(active_joint)+1) % active_link.childJoints.length];
 
-    robot.joints[active_joint].display_geom.material.opacity = 0.5; 
+    active_joint.display_geom.material.opacity = 0.5; 
 }
 
 function change_active_joint_previous() {
-    robot.joints[active_joint].display_geom.material.opacity = 1.0; 
+    active_joint.display_geom.material.opacity = 1.0; 
 
-    active_joint = robot.links[active_link].children[(robot.links[active_link].children.length + robot.links[active_link].children.indexOf(active_joint)-1) % robot.links[active_link].children.length];
+    active_joint = active_link.childJoints[(active_link.childJoints.length + active_link.childJoints.indexOf(active_joint)-1) % active_link.childJoints.length];
 
-    robot.joints[active_joint].display_geom.material.opacity = 0.5; 
+    active_joint.display_geom.material.opacity = 0.5; 
 }
 

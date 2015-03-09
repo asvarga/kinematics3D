@@ -111,15 +111,15 @@ function init() {
     // reminder of init_robot() ...
 
     // CS148: uncomment after implementing joints in kinematic hierarchy 
-    /*
+    
     // initialize the active link/joint for control
-    active_link = robot.base;
-    active_joint = robot.links[active_link].children[0];
+    active_link = robot.baseLink;
+    active_joint = active_link.childJoints[0];
     //robot.links[active_link].geom.material.wireframe = false; 
     //robot.links[active_link].geom.material.opacity = 0.5; 
-    robot.joints[active_joint].display_geom.material.wireframe = false; 
-    robot.joints[active_joint].display_geom.material.opacity = 0.5; 
-    */
+    active_joint.display_geom.material.wireframe = false; 
+    active_joint.display_geom.material.opacity = 0.5; 
+    
 
     // !!! change this to scale geometries or scale view
     // scaling geometries for view
@@ -176,7 +176,9 @@ function init_robot_joints_geoms() {
 
         // Note: kinematics are maintained independently from threejs scene graph
         // add joint geometry to threejs scene graph, added SG node transforms cylinder geometry
-        var temp_geom = new THREE.CylinderGeometry( 0.2, 0.2, 0.2, 20, 3, false );  // cylinder axis aligns with along y-axis in object space
+        var size = (typeof joints_geom !== 'undefined' ? joints_geom[x] : 0.2);
+        console.log(size);
+        var temp_geom = new THREE.CylinderGeometry( size, size, size, 20, 3, false );  // cylinder axis aligns with along y-axis in object space
         //var temp_material = new THREE.MeshBasicMaterial( {color: 0x444444} );
         var temp_material = new THREE.MeshLambertMaterial( {color: 0xff0000} );
         robot.joints[x].display_geom = new THREE.Mesh(temp_geom, temp_material); 
