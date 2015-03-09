@@ -111,13 +111,15 @@ function change_active_link_down() {
     // }
 
     if (active_link !== null) {
-        active_joint.display_geom.material.opacity = 1.0; 
+        if (active_joint.childLink.childJoints.length > 0) {
+            active_joint.display_geom.material.opacity = 1.0; 
 
-        active_link = active_joint.childLink;
-        active_joint = active_link.childJoints[0];
+            active_link = active_joint.childLink;
+            active_joint = active_link.childJoints[0];
 
-        active_joint.display_geom.material.opacity = 0.5;
-    } else {
+            active_joint.display_geom.material.opacity = 0.5;
+        }
+    } else if (robot.baseLink.childJoints.length > 0) {
         active_link = robot.baseLink;
         active_joint = active_link.childJoints[0];
 

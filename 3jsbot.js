@@ -177,7 +177,7 @@ function init_robot_joints_geoms() {
         // Note: kinematics are maintained independently from threejs scene graph
         // add joint geometry to threejs scene graph, added SG node transforms cylinder geometry
         var size = (typeof joints_geom !== 'undefined' ? joints_geom[x] : 0.2);
-        console.log(size);
+        // console.log(size);
         var temp_geom = new THREE.CylinderGeometry( size, size, size, 20, 3, false );  // cylinder axis aligns with along y-axis in object space
         //var temp_material = new THREE.MeshBasicMaterial( {color: 0x444444} );
         var temp_material = new THREE.MeshLambertMaterial( {color: 0xff0000} );

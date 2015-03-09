@@ -40,15 +40,26 @@ function traverse_forward_kinematics_link(link, M) {
 }
 
 function traverse_forward_kinematics_joint(joint, M) {
+
+	if (robot.wavy) {
+		joint.origin.rpy[0] = Math.PI/4 + Math.PI/8 * Math.sin(Date.now()/1000);
+	}
+
 	var T = generate_translation_matrix(joint.origin.xyz);
 	var R = generate_rotation_matrix(joint.origin.rpy);
-	var Mnew = matrix_multiply(M, matrix_multiply(T, R));
+	var Mnew = matrix_multiply(M, T);
 
-	joint.xform = Mnew;
-	var tempmat = matrix_2Darray_to_threejs(joint.xform);
-	simpleApplyMatrix(joint.geom, tempmat);
+	joint.origin.xform = Mnew;
+	var tempmat = matrix_2Darray_to_threejs(joint.origin.xform);
+	simpleApplyMatrix(joint.origin.geom, tempmat);
 
-	traverse_forward_kinematics_link(joint.childLink, Mnew);
+	var Mnewer = matrix_multiply(Mnew, R);
+
+	joint.xform = Mnewer;
+	var tempmat2 = matrix_2Darray_to_threejs(joint.xform);
+	simpleApplyMatrix(joint.geom, tempmat2);
+
+	traverse_forward_kinematics_link(joint.childLink, Mnewer);
 }
 
 
