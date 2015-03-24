@@ -37,8 +37,8 @@
 
 <!-- <script src="robots/robot_urdf_example.js"></script>  -->
 <!-- <script src="robots/robot_crawler.js"></script>  -->
-<!-- <script src="robots/robot_br2.js"></script>  -->
-<script src="robots/tree.js"></script> 
+<script src="robots/robot_br2.js"></script> 
+<!-- <script src="robots/tree.js"></script>  -->
  
 <!-- 3jsbot includes -->
 <script src="3jsbot.js"></script> 
@@ -50,9 +50,8 @@
 <script src="3jsbot_inverse_kinematics.js"></script> 
 <script src="3jsbot_potential_field.js"></script> 
 <script src="3jsbot_rrt_connect.js"></script> 
-
-<script src="3jsbot_quaternion.js"></script> 
 -->
+<script src="3jsbot_quaternion.js"></script> 
 
 <script src="3jsbot_matrix.js"></script> 
 
@@ -111,7 +110,7 @@ function my_init() {
     textbar.style.height = 20;
     textbar.style.backgroundColor = "black";
     textbar.style.color = "#00ff00";
-    textbar.innerHTML = "NOTICE: If the tree robot doesn't work, check out http://bit.ly/robotree";
+    // textbar.innerHTML = "NOTICE: If the tree robot doesn't work, check out http://bit.ly/robotree";
     textbar.style.top = 10 + 'px';
     textbar.style.left = 10 + 'px';
     document.body.appendChild(textbar);
@@ -183,6 +182,8 @@ function init_robot_joints() {
         // robot.links[robot.joints[x].parent].childJoints[x] = robot.joints[x];
         robot.links[robot.joints[x].parent].childJoints.push(robot.joints[x]);
         robot.joints[x].parentLink = robot.links[robot.joints[x].parent];
+
+        robot.joints[x].angle = 0;
     }
 
     // CS148: do not remove, this is used to create threejs geometries
