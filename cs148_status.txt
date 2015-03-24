@@ -8,7 +8,10 @@
  
  Assignment 3: CANCELLED
  
- Assignment 4: PENDING
+ Assignment 4: CHECK
+ comment: robotree is beautiful. very nice work!
+ warning: joints to do not appear and/or are not selectable
+ comment: treating small size of joints as warning due to likely interference with robotree; let's debug during office hours or after class
  
  Assignment 5: PENDING
  
