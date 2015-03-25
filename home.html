@@ -38,6 +38,7 @@
 <!-- <script src="robots/robot_urdf_example.js"></script>  -->
 <!-- <script src="robots/robot_crawler.js"></script>  -->
 <script src="robots/robot_br2.js"></script> 
+<!-- ROBO-TREE NO LONGER WORKS: -->
 <!-- <script src="robots/tree.js"></script>  -->
  
 <!-- 3jsbot includes -->
@@ -137,6 +138,18 @@ function init_robot() {
     // initialize inverse kinematics target location 
     ik_target = [[0],[0.8],[1.0],[1]];
 
+    var temp_geom = new THREE.CubeGeometry(0.3, 0.3, 0.3);
+    var temp_material = new THREE.MeshBasicMaterial( {color: 0x00ffff} )
+    robot.heading_geom = new THREE.Mesh(temp_geom, temp_material);
+    scene.add(robot.heading_geom);
+
+    var temp_geom = new THREE.CubeGeometry(0.3, 0.3, 0.3);
+    var temp_material = new THREE.MeshBasicMaterial( {color: 0x008888} )
+    robot.lateral_geom = new THREE.Mesh(temp_geom, temp_material);
+    scene.add(robot.lateral_geom);
+
+    robot.prevt = -1;
+
 }
 
 // CS148: nothing to add here 
@@ -187,6 +200,17 @@ function init_robot_joints() {
 
         robot.joints[x].angle = 0;
         robot.joints[x].control = 0;
+        robot.joints[x].pd = {
+            desired: 0,
+            k: {
+                p: 5,
+                d: 0.4
+            },
+            vals: {
+                p: 0,
+                d: 0
+            }
+        };
 
     }
 
@@ -281,6 +305,7 @@ function my_animate() {
     // ROBOT DYNAMICS 
 
     // apply robot controls to robot configuration (assuming pure kinematics for now)
+    robot_pd_control();
     robot_apply_controls();
 
     // DRAW ROBOT 

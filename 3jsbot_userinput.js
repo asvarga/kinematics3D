@@ -44,13 +44,13 @@ function user_input() {
     /* CS148: user input for controlling joints */ 
     // incrment/decrement angle of active joint 
     if ( keyboard.pressed("u") ) {
-        robot.joints[active_joint].control += 0.01;  // add motion increment 
+        active_joint.pd.desired += 0.01;  // add motion increment 
     }
     else if ( keyboard.pressed("i") ) {
-        robot.joints[active_joint].control += -0.01;  // add motion increment 
+        active_joint.pd.desired += -0.01;  // add motion increment 
     }
 
-    /* CS148: user input for base movement
+    // CS148: user input for base movement
     // move robot base in the ground plane
     if ( keyboard.pressed("a") ) {  // turn
         robot.control.rpy[1] += 0.1;
@@ -58,28 +58,39 @@ function user_input() {
     if ( keyboard.pressed("d") ) {  // turn
         robot.control.rpy[1] += -0.1;
     }
+    var ROT = generate_rotation_matrix(robot.origin.rpy);
+    var F = generate_translation_matrix([0,0,0.1]);
+    var B = generate_translation_matrix([0,0,-0.1]);
+    var L = generate_translation_matrix([0.1,0,0]);
+    var R = generate_translation_matrix([-0.1,0,0]);
+    F = matrix_multiply(ROT, F);
+    B = matrix_multiply(ROT, B);
+    L = matrix_multiply(ROT, L);
+    R = matrix_multiply(ROT, R);
 
     if ( keyboard.pressed("w") ) {  // forward
         //robot.origin.xyz[2] += 0.1;  // simple but ineffective: not aligned with robot
-        robot.control.xyz[2] += 0.1 * (robot_heading[2][0]-robot.origin.xyz[2]);
-        robot.control.xyz[0] += 0.1 * (robot_heading[0][0]-robot.origin.xyz[0]);
+        // robot.control.xyz[2] += 0.1 * (robot_heading[2][0]-robot.origin.xyz[2]);
+        // robot.control.xyz[0] += 0.1 * (robot_heading[0][0]-robot.origin.xyz[0]);
+        robot.control.xyz = multiply_matrix_vector(F, robot.control.xyz);
     }
     if ( keyboard.pressed("s") ) {  // backward
         //robot.origin.xyz[2] -= 0.1; // simple but ineffective: not aligned with robot
-        robot.control.xyz[2] += -0.1 * (robot_heading[2][0]-robot.origin.xyz[2]);
-        robot.control.xyz[0] += -0.1 * (robot_heading[0][0]-robot.origin.xyz[0]);
+        // robot.control.xyz[2] += -0.1 * (robot_heading[2][0]-robot.origin.xyz[2]);
+        // robot.control.xyz[0] += -0.1 * (robot_heading[0][0]-robot.origin.xyz[0]);
+        robot.control.xyz = multiply_matrix_vector(B, robot.control.xyz);
     }
     if ( keyboard.pressed("q") ) {  // strafe
         //robot.origin.xyz[0] += 0.1; // simple but ineffective: not aligned with robot
-
-        robot.control.xyz[2] += 0.1 * (robot_lateral[2][0]-robot.origin.xyz[2]);
-        robot.control.xyz[0] += 0.1 * (robot_lateral[0][0]-robot.origin.xyz[0]);
+        // robot.control.xyz[2] += 0.1 * (robot_lateral[2][0]-robot.origin.xyz[2]);
+        // robot.control.xyz[0] += 0.1 * (robot_lateral[0][0]-robot.origin.xyz[0]);
+        robot.control.xyz = multiply_matrix_vector(L, robot.control.xyz);
     }
     if ( keyboard.pressed("e") ) {  // strafe
         // robot.origin.xyz[0] -= 0.1; // simple but ineffective: not aligned with robot
-
-        robot.control.xyz[2] += -0.1 * (robot_lateral[2][0]-robot.origin.xyz[2]);
-        robot.control.xyz[0] += -0.1 * (robot_lateral[0][0]-robot.origin.xyz[0]);
+        // robot.control.xyz[2] += -0.1 * (robot_lateral[2][0]-robot.origin.xyz[2]);
+        // robot.control.xyz[0] += -0.1 * (robot_lateral[0][0]-robot.origin.xyz[0]);
+        robot.control.xyz = multiply_matrix_vector(R, robot.control.xyz);
     }
 
     /* CS148: user input for executing inverse kinematics iterations */

@@ -22,8 +22,20 @@ function robot_forward_kinematics() {
 	var T = generate_translation_matrix(robot.origin.xyz);
 	var R = generate_rotation_matrix(robot.origin.rpy);
 	var M = matrix_multiply(T, R);
-	
+
 	traverse_forward_kinematics_link(robot.baseLink, M);
+
+	var heading = generate_translation_matrix([0,0,1]);
+	heading = matrix_multiply(R, heading);
+	heading = matrix_multiply(T, heading);
+	var heading3 = matrix_2Darray_to_threejs(heading);
+	simpleApplyMatrix(robot.heading_geom, heading3);
+
+	var lateral = generate_translation_matrix([1,0,0]);
+	lateral = matrix_multiply(R, lateral);
+	lateral = matrix_multiply(T, lateral);
+	var lateral3 = matrix_2Darray_to_threejs(lateral);
+	simpleApplyMatrix(robot.lateral_geom, lateral3);
 }
 
 function traverse_forward_kinematics_link(link, M) {
@@ -74,7 +86,7 @@ function traverse_forward_kinematics_joint(joint, M) {
 	traverse_forward_kinematics_link(joint.childLink, MnewerControl);
 }
 
-
+// function compute_and_draw_heading() {  }
 
 
 
