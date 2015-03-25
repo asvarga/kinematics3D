@@ -30,6 +30,15 @@ function matrix_multiply(M1, M2) {
 	return ret;
 }
 
+function multiply_matrix_vector(M, v) {
+	var v1 = [v[0], v[1], v[2], 1];
+	var ret = [];
+	for (var y=0; y<M.length; y++) {
+		ret.push(vector_dot(M[y], v1));
+	}
+	return ret;
+}
+
 function matrix_transpose(M) {
 	var ret = [];
 	for (var x=0; x<M[0].length; x++) {
@@ -63,6 +72,10 @@ function vector_cross(u, v) {
 
 function vector_dot(u, v) {
 	return u[0]*v[0]+u[1]*v[1]+u[2]*v[2]+u[3]*v[3];
+}
+
+function vector_add(u, v) {
+	return [u[0]+v[0], u[1]+v[1], u[2]+v[2]];
 }
 
 function generate_identity() {

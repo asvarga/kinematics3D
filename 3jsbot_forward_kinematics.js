@@ -22,6 +22,7 @@ function robot_forward_kinematics() {
 	var T = generate_translation_matrix(robot.origin.xyz);
 	var R = generate_rotation_matrix(robot.origin.rpy);
 	var M = matrix_multiply(T, R);
+	
 	traverse_forward_kinematics_link(robot.baseLink, M);
 }
 
@@ -48,10 +49,11 @@ function traverse_forward_kinematics_joint(joint, M) {
 		// joint.origin.rpy[2] = Math.PI/2*(i%4) + Date.now()/1000;
 	}
 
+	var C = rotation_matrix_from_axisangle(joint.axis, joint.angle || 0);
+
 	// only translate joint.origin.geom
 	var T = generate_translation_matrix(joint.origin.xyz);
 	var Mnew = matrix_multiply(M, T);
-	var C = rotation_matrix_from_axisangle(joint.axis, joint.angle || 0);
 	var MnewControl = matrix_multiply(Mnew, C);
 
 	joint.origin.xform = MnewControl;

@@ -44,9 +44,10 @@
 <script src="3jsbot.js"></script> 
 
 <script src="3jsbot_forward_kinematics.js"></script> 
-<!--
+
 <script src="3jsbot_controls.js"></script> 
 <script src="3jsbot_pd_control.js"></script> 
+<!--
 <script src="3jsbot_inverse_kinematics.js"></script> 
 <script src="3jsbot_potential_field.js"></script> 
 <script src="3jsbot_rrt_connect.js"></script> 
@@ -150,6 +151,7 @@ function init_robot_links() {
 
     // initialize controls for robot base link
     robot.control = {xyz: [0,0,0], rpy:[0,0,0]}; 
+    robot.origin.rpy = [0,0,0];
 }
 
 
@@ -184,6 +186,8 @@ function init_robot_joints() {
         robot.joints[x].parentLink = robot.links[robot.joints[x].parent];
 
         robot.joints[x].angle = 0;
+        robot.joints[x].control = 0;
+
     }
 
     // CS148: do not remove, this is used to create threejs geometries
@@ -277,7 +281,7 @@ function my_animate() {
     // ROBOT DYNAMICS 
 
     // apply robot controls to robot configuration (assuming pure kinematics for now)
-    //robot_apply_controls();
+    robot_apply_controls();
 
     // DRAW ROBOT 
 
