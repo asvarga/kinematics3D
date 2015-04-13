@@ -17,13 +17,20 @@ generate_rotation_matrix_Z
 */
 
 function get_col(M, i) {
-	return [M[0][i], M[1][i], M[2][i], M[3][i]];
+	var ret = [];
+	for (var j=0; j<M.length; j++) {
+		ret.push(M[j][i]);
+	}
+	// return [M[0][i], M[1][i], M[2][i], M[3][i]];
+	return ret;
 }
 
 function matrix_multiply(M1, M2) {
-	var ret = [[],[],[],[]];
+	// var ret = [[],[],[],[]];
+	var ret = [];
 	for (var y=0; y<M1.length; y++) {
-		for (var x=0; x<M2.length; x++) {
+		ret.push([]);
+		for (var x=0; x<M2[0].length; x++) {
 			ret[y].push(vector_dot(M1[y], get_col(M2, x)));
 		}	
 	}
@@ -71,7 +78,12 @@ function vector_cross(u, v) {
 }
 
 function vector_dot(u, v) {
-	return u[0]*v[0]+u[1]*v[1]+u[2]*v[2]+u[3]*v[3];
+	var ret = 0;
+	for (var i=0; i<u.length; i++) {
+		ret += u[i]*v[i];
+	}
+	// return u[0]*v[0]+u[1]*v[1]+u[2]*v[2]+u[3]*v[3];
+	return ret;
 }
 
 function vector_add(u, v) {
@@ -120,7 +132,51 @@ function generate_rotation_matrix(v) {
 	return matrix_multiply(rz, matrix_multiply(ry, rx));
 }
 
+function get_global_pos_axis(joint) {
+	var xf = joint.xform || generate_identity();
+	var loc_or = [0, 0, 0];
+	var loc_ax = joint.axis || [1, 0, 0];
+	var glo_or = multiply_matrix_vector(xf, loc_or);
+	var glo_ax = multiply_matrix_vector(xf, loc_ax);
+	var or = glo_or.slice(0, 3);
+	var ax = glo_ax.slice(0, 3);
+	ax = [ax[0]-or[0], ax[1]-or[1], ax[2]-or[2]];
+	
+	return {
+		position: or,
+		axis: ax
+	}
+}
 
+function pseudoinverse(J) {
+	var J_1 = null;
+	if (J.length == J[0].length) {
+		J_1 = numeric.inv(J);
+	} else if (J.length > J[0].length) {
+		// console.log("----");
+		// console.log([Jt.length, Jt[0].length]);
+		var Jt = matrix_transpose(J);
+		// console.log([J.length, J[0].length]);
+		var JtJ = matrix_multiply(Jt, J);
+		// console.log([JJt.length, JJt[0].length]);
+		var JtJ_1 = numeric.inv(JtJ);
+		// console.log([JJt_1.length, JJt_1[0].length]);
+		J_1 = matrix_multiply(JtJ_1, Jt);
+		// console.log([J_1.length, J_1[0].length]);
+	} else {
+		// console.log("----");
+		// console.log([Jt.length, Jt[0].length]);
+		var Jt = matrix_transpose(J);
+		// console.log([J.length, J[0].length]);
+		var JJt = matrix_multiply(J, Jt);
+		// console.log([JJt.length, JJt[0].length]);
+		var JJt_1 = numeric.inv(JJt);
+		// console.log([JJt_1.length, JJt_1[0].length]);
+		J_1 = matrix_multiply(Jt, JJt_1);
+		// console.log([J_1.length, J_1[0].length]);
+	}
+	return J_1;
+}
 
 
 

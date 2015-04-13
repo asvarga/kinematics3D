@@ -48,8 +48,10 @@
 
 <script src="3jsbot_controls.js"></script> 
 <script src="3jsbot_pd_control.js"></script> 
-<!--
+
 <script src="3jsbot_inverse_kinematics.js"></script> 
+
+<!--
 <script src="3jsbot_potential_field.js"></script> 
 <script src="3jsbot_rrt_connect.js"></script> 
 -->
@@ -136,7 +138,8 @@ function init_robot() {
     init_robot_joints();
 
     // initialize inverse kinematics target location 
-    ik_target = [[0],[0.8],[1.0],[1]];
+    //ik_target = [[0],[0.8],[1.0],[1]];
+    ik_target = [0,0.8,1.0,1];
 
     var temp_geom = new THREE.CubeGeometry(0.3, 0.3, 0.3);
     var temp_material = new THREE.MeshBasicMaterial( {color: 0x00ffff} )
@@ -305,7 +308,7 @@ function my_animate() {
     // ROBOT DYNAMICS 
 
     // apply robot controls to robot configuration (assuming pure kinematics for now)
-    robot_pd_control();
+    //robot_pd_control();
     robot_apply_controls();
 
     // DRAW ROBOT 
@@ -328,7 +331,9 @@ function my_animate() {
     */
 
     // inverse kinematics
-    //robot_inverse_kinematics(ik_target, "forearm_right_yaw", ik_local);
+    j_pseudo_inv = true;
+    ik_local = [0,0,0.5,1];
+    robot_inverse_kinematics(ik_target, "forearm_right_yaw", ik_local);
 
     // configuration space motion planning
     //robot_rrt_connect(q_desired);

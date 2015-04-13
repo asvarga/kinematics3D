@@ -102,10 +102,12 @@ function user_input() {
         update_pd = true;
 
     /* CS148: user input for moving IK target up/down */
-    if ( keyboard.pressed("r") )   // ik target up
-        ik_target[1][0] += 0.01;
+    if ( keyboard.pressed("r") ) {   // ik target up
+        ik_target[1] += 0.01;
+        // console.log(ik_target);
+    }
     if ( keyboard.pressed("f") )  // ik target down
-        ik_target[1][0] -= 0.01;
+        ik_target[1] -= 0.01;
 }
 
 
