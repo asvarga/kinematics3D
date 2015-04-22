@@ -11,7 +11,7 @@
  Assignment 4: CHECK
  comment: robotree is beautiful. very nice work!
  warning: joints to do not appear and/or are not selectable
- comment: treating small size of joints as warning due to likely interference with robotree; let's debug during office hours or after class
+ comment: treating small size of joints as warning due to likely interference with robotree; lets debug during office hours or after class
  
  Assignment 5: DUE
  error: joint PD controller not applied to joints
