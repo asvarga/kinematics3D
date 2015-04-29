@@ -51,10 +51,19 @@
 
 <script src="3jsbot_inverse_kinematics.js"></script> 
 
-<!--
-<script src="3jsbot_potential_field.js"></script> 
+
+<!--<script src="3jsbot_potential_field.js"></script> -->
+
 <script src="3jsbot_rrt_connect.js"></script> 
--->
+<script src="3jsbot_collision.js"></script> 
+<script src="worlds/world_basic.js"></script>
+
+<!--<script src="worlds/world_empty.js"></script>-->
+<!--<script src="worlds/world_random.js"></script>-->
+<!--<script src="worlds/world_local_minima.js"></script>-->
+<!--<script src="worlds/world_s.js"></script>-->
+
+
 <script src="3jsbot_quaternion.js"></script> 
 
 <script src="3jsbot_matrix.js"></script> 
@@ -153,6 +162,8 @@ function init_robot() {
 
     robot.prevt = -1;
 
+    // set scene for planner
+    robot_set_planning_scene();
 }
 
 // CS148: nothing to add here 
@@ -346,7 +357,8 @@ function my_animate() {
     // if we have time this semester
     //robot_potential_field(x_desired);
 
-
+    // show if robot is currently in collision
+    robot_iscollision();
 }
 
 
