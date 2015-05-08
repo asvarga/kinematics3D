@@ -13,16 +13,20 @@
  warning: joints to do not appear and/or are not selectable
  comment: treating small size of joints as warning due to likely interference with robotree; lets debug during office hours or after class
  
- Assignment 5: DUE
+ Assignment 5: CHECK
  error: joint PD controller not applied to joints
  warning: camera controls are not responding
+ regrade: working
  
  Assignment 6: CHECK
  comment: good work
  comment: note Jacobian is 6xN for pseudoinverse, even though only upper three rows are needed for multiplication of endeffector displacement
  
- Assignment 7: PENDING
+ Assignment 7: DUE
+ error: branch not found
  
- Assignment 8: PENDING
+ Assignment 8: CHECK
+ 
+ Current grade: B (6/7 assignments completed)
  
 
