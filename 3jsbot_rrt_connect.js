@@ -68,17 +68,20 @@ function robot_rrt_planner_iterate() {
 
     rrt_alg = 1;  // 0: basic rrt (OPTIONAL), 1: rrt_connect (REQUIRED)
 
-    if (typeof rrt_iterate !== 'undefined' && (Date.now()-cur_time > 10)) {
+    if (Date.now()-cur_time > 10) {
         cur_time = Date.now();
 
         // CS148: implement RRT iteration here
         var q_rand = random_config();
-        if (rrt_extend(tree_a, q_rand) !== "trapped" && rrt_connect(tree_b, q_rand) === "reached") {
-            return find_path(tree_a, tree_b);
+        if (rrt_extend(tree_a, q_rand) !== "trapped" && rrt_connect(tree_b, tree_a.newest.vertex) === "reached") {
+            return find_whole_path();
         }
-        if (rrt_extend(tree_b, q_rand) !== "trapped" && rrt_connect(tree_a, q_rand) === "reached") {
-            return find_path(tree_a, tree_b);
+        q_rand = random_config();
+        if (rrt_extend(tree_b, q_rand) !== "trapped" && rrt_connect(tree_a, tree_b.newest.vertex) === "reached") {
+            return find_whole_path();
         }
+
+        //console.log([tree_a.vertices.length, tree_b.vertices.length]);
     }
 
     // return path not currently found
@@ -100,7 +103,7 @@ function tree_init(q) {
     add_config_origin_indicator_geom(tree.vertices[0]);
 
     // maintain index of newest vertex added to tree
-    tree.newest = 0;
+    tree.newest = tree.vertices[0];
 
     return tree;
 }
@@ -137,6 +140,8 @@ function tree_add_vertex(T, q, parent) {
     add_config_origin_indicator_geom(vertex);
 
     parent.edges.push(vertex);
+
+    T.newest = vertex;
 }
 
 // function tree_add_edge() {
@@ -158,11 +163,15 @@ function new_config(q_rand, q_near) {
     var D = diff(q_rand, q_near);
     var len = get_len(D);
 
+    //console.log(q_near);
+    // console.log(JSON.stringify(D));
+
     var config = [];
     if (len < eps) {
         config = q_rand;
     } else {
         for (var i=0; i<q_L; i++) {
+            // console.log(q_near[i]);
             config.push(q_near[i] + D[i]/len*eps);
         }
     }
@@ -188,10 +197,11 @@ function nearest_neighbor(q, T) {   // nothing fancy, pretty slow
 }
 
 function rrt_extend(T, q_rand) {
-    var q_near = nearest_neighbor(q, T);
+    var q_near_vertex = nearest_neighbor(q_rand, T);
+    var q_near = q_near_vertex.vertex;
     var q_new = new_config(q_rand, q_near)
     if (q_new) {
-        tree_add_vertex(T, q_new, q_near);
+        tree_add_vertex(T, q_new, q_near_vertex);
         var D = diff(q_new, q_near);
         var len = get_len(D);
         if (len < eps/1000) {   // basically q_new == q_near
@@ -211,8 +221,22 @@ function rrt_connect(T, q_rand) {
     return S;
 }
 
-function find_path() {
+function find_path(T) {
+    var node = T.newest;
+    var path = [node];
+    while (node.parent) {
+        node = node.parent;
+        path.push(node);
+    }
+    return path;
+}
 
+function find_whole_path() {
+    var path_a = find_path(tree_a);
+    var path_b = find_path(tree_b);
+    path_a.reverse();
+    path_a.pop();
+    return path_a.concat(path_b);
 }
 
 function path_dfs() {
@@ -229,6 +253,7 @@ function diff(a, b) {
         var d = fix_angle(a[i]-b[i]);
         D.push(d);
     }
+    return D;
 }
 
 function get_len(x) {

@@ -58,10 +58,10 @@
 <script src="3jsbot_collision.js"></script> 
 
 <script src="worlds/world_basic.js"></script>
-<!--<script src="worlds/world_empty.js"></script>-->
-<!--<script src="worlds/world_random.js"></script>-->
-<!--<script src="worlds/world_local_minima.js"></script>-->
-<!--<script src="worlds/world_s.js"></script>-->
+<!-- <script src="worlds/world_empty.js"></script> -->
+<!-- <script src="worlds/world_random.js"></script> -->
+<!-- <script src="worlds/world_local_minima.js"></script> -->
+<!-- <script src="worlds/world_s.js"></script> -->
 
 
 <script src="3jsbot_quaternion.js"></script> 
@@ -373,12 +373,28 @@ function my_animate() {
     if (generating_motion_plan) {
         //robot_rrt_connect(q_desired);
         rrt_result = robot_rrt_planner_iterate();
-        if (rrt_result === "reached") {
+        if (rrt_result) {   // === "reached") {
             //alert("home: reached");
             generating_motion_plan = false;
+
+            robot_path = rrt_result;
+
+            for (var i=0; i<rrt_result.length; i++) {
+                robot_path[i].geom.material.color = {r:1, g:0, b:0};
+            }
+
+            robot_path_traverse_idx = 0;
         }
     }
 }
+
+// function test() {
+//     // var q_rand = [4,0,4, 0,0,0, 0,0,0,0,0];
+//     // console.log(rrt_connect(tree_a, q_rand));
+//     // q_rand = [4,0,0, 0,0,0, 0,0,0,0,0];
+//     // console.log(rrt_connect(tree_a, q_rand));
+//     console.log(robot_rrt_planner_iterate());
+// }
 
 
 

@@ -95,9 +95,11 @@ function robot_collision_test(q) {
 
 function robot_collision_forward_kinematics (q) { 
 
+    // console.log(JSON.stringify(q));
+
     // transform robot base into the global world coordinates
     var mstack = matrix_multiply(generate_translation_matrix([q[0],q[1],q[2]]),matrix_multiply(matrix_multiply(generate_rotation_matrix_Z(q[5]),generate_rotation_matrix_Y(q[4])),generate_rotation_matrix_X(q[3])));
-
+    // test = mstack;
     // recurse kinematics, testing collisions at each link
     // return traverse_collision_forward_kinematics_link(robot.links[robot.base],mstack,q);
     return traverse_collision_forward_kinematics_link(robot.baseLink,mstack,q);
