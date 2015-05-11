@@ -56,8 +56,8 @@
 
 <script src="3jsbot_rrt_connect.js"></script> 
 <script src="3jsbot_collision.js"></script> 
-<script src="worlds/world_basic.js"></script>
 
+<script src="worlds/world_basic.js"></script>
 <!--<script src="worlds/world_empty.js"></script>-->
 <!--<script src="worlds/world_random.js"></script>-->
 <!--<script src="worlds/world_local_minima.js"></script>-->
@@ -164,6 +164,10 @@ function init_robot() {
 
     // set scene for planner
     robot_set_planning_scene();
+
+    // initialize flags for executing planner
+    generating_motion_plan = false;
+    generate_motion_plan = false;
 }
 
 // CS148: nothing to add here 
@@ -359,6 +363,21 @@ function my_animate() {
 
     // show if robot is currently in collision
     robot_iscollision();
+
+    // configuration space motion planning
+    if ((generate_motion_plan) && (!generating_motion_plan)) {
+        robot_rrt_planner_init();
+        generating_motion_plan = true;
+        generate_motion_plan = false;
+    }
+    if (generating_motion_plan) {
+        //robot_rrt_connect(q_desired);
+        rrt_result = robot_rrt_planner_iterate();
+        if (rrt_result === "reached") {
+            //alert("home: reached");
+            generating_motion_plan = false;
+        }
+    }
 }
 
 
@@ -366,4 +385,8 @@ function my_animate() {
 </script>
 </body>
 </html>
+
+
+
+
 

@@ -24,7 +24,6 @@ CS148: reference code has functions for:
     path_dfs
 */
 
-
 function robot_rrt_planner_init() {
 
     // form configuration from base location and joint angles
@@ -44,12 +43,19 @@ function robot_rrt_planner_init() {
         q_start_config = q_start_config.concat(robot.joints[x].angle);
     }
 
+    q_L = q_start_config.length;
+
     // set goal configuration as the zero configuration
     var i; 
     q_goal_config = new Array(q_start_config.length);
     for (i=0;i<q_goal_config.length;i++) q_goal_config[i] = 0;
 
     // CS148: add necessary RRT initialization here
+    tree_a = tree_init(q_start_config);
+    tree_b = tree_init(q_goal_config);
+
+    eps = 0.5;
+    K = 3;
 
     // make sure the rrt iterations are not running faster than animation update
     cur_time = Date.now();
@@ -62,11 +68,17 @@ function robot_rrt_planner_iterate() {
 
     rrt_alg = 1;  // 0: basic rrt (OPTIONAL), 1: rrt_connect (REQUIRED)
 
-    if (rrt_iterate && (Date.now()-cur_time > 10)) {
+    if (typeof rrt_iterate !== 'undefined' && (Date.now()-cur_time > 10)) {
         cur_time = Date.now();
 
         // CS148: implement RRT iteration here
-
+        var q_rand = random_config();
+        if (rrt_extend(tree_a, q_rand) !== "trapped" && rrt_connect(tree_b, q_rand) === "reached") {
+            return find_path(tree_a, tree_b);
+        }
+        if (rrt_extend(tree_b, q_rand) !== "trapped" && rrt_connect(tree_a, q_rand) === "reached") {
+            return find_path(tree_a, tree_b);
+        }
     }
 
     // return path not currently found
@@ -110,6 +122,130 @@ function add_config_origin_indicator_geom(vertex) {
 
     vertex.geom = temp_mesh;
 }
+
+///////////
+
+function tree_add_vertex(T, q, parent) {
+    var vertex = {
+        vertex: q,
+        edges: [],
+        parent: parent
+    }
+    T.vertices.push(vertex);
+
+    // create rendering geometry for base location of vertex configuration
+    add_config_origin_indicator_geom(vertex);
+
+    parent.edges.push(vertex);
+}
+
+// function tree_add_edge() {
+
+// }
+
+function random_config() {
+    var x = Math.random()*(robot_boundary[1][0]-robot_boundary[0][0])+robot_boundary[0][0];
+    var z = Math.random()*(robot_boundary[1][2]-robot_boundary[0][2])+robot_boundary[0][2];
+    var rot = Math.random()*Math.PI*2;
+    var config = [x, 0, z, 0, rot, 0];
+    for (var i=6; i<q_L; i++) {
+        config.push(Math.random()*Math.PI*2);
+    }
+    return config;
+}
+
+function new_config(q_rand, q_near) {
+    var D = diff(q_rand, q_near);
+    var len = get_len(D);
+
+    var config = [];
+    if (len < eps) {
+        config = q_rand;
+    } else {
+        for (var i=0; i<q_L; i++) {
+            config.push(q_near[i] + D[i]/len*eps);
+        }
+    }
+
+    if (robot_collision_test(config)) {
+        return false;
+    }
+    return config;
+}
+
+function nearest_neighbor(q, T) {   // nothing fancy, pretty slow
+    var nearest = null;
+    var nearest_dist = Infinity;
+    for (var i=0; i<T.vertices.length; i++) {
+        var D = diff(q, T.vertices[i].vertex);
+        var len = get_len(D);
+        if (len < nearest_dist) {       // new nearest
+            nearest_dist = len;
+            nearest = T.vertices[i];
+        }
+    }
+    return nearest;
+}
+
+function rrt_extend(T, q_rand) {
+    var q_near = nearest_neighbor(q, T);
+    var q_new = new_config(q_rand, q_near)
+    if (q_new) {
+        tree_add_vertex(T, q_new, q_near);
+        var D = diff(q_new, q_near);
+        var len = get_len(D);
+        if (len < eps/1000) {   // basically q_new == q_near
+            return "reached";
+        } else {
+            return "advanced";
+        }
+    }
+    return "trapped";
+}
+
+function rrt_connect(T, q_rand) {
+    var S = "advanced";
+    while (S === "advanced") {
+        S = rrt_extend(T, q_rand);
+    }
+    return S;
+}
+
+function find_path() {
+
+}
+
+function path_dfs() {
+
+}
+
+function diff(a, b) {
+    var D = [];
+    for (var i=0; i<3; i++) {           // positions
+        var d = a[i]-b[i];
+        D.push(d);
+    }
+    for (var i=3; i<q_L; i++) {         // angles
+        var d = fix_angle(a[i]-b[i]);
+        D.push(d);
+    }
+}
+
+function get_len(x) {
+    var len2 = 0;
+    for (var i=0; i<x.length; i++) {           // positions
+        len2 += x[i]*x[i];
+    }
+    return Math.sqrt(len2);
+}
+
+function fix_angle(x) {     // get into [-PI, PI] range
+    return (x + Math.PI*5)%(2*Math.PI)-Math.PI;
+}
+
+
+
+
 
 
 

@@ -108,6 +108,12 @@ function user_input() {
     }
     if ( keyboard.pressed("f") )  // ik target down
         ik_target[1] -= 0.01;
+
+    // generate motion plan
+    if ( keyboard.pressed("m") )
+        generate_motion_plan = true;
+    else
+        generate_motion_plan = false;
 }
 
 
