@@ -24,6 +24,10 @@
  
  Assignment 7: DUE
  error: branch not found
+ regrade: failure on public test with s world
+ comment: randomization does not sufficiently sample configuration space
+ warning: failure on private test with crawler
+ warning: failure on private test with urdf_example
  
  Assignment 8: CHECK
  
