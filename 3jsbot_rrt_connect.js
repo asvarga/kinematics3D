@@ -149,8 +149,9 @@ function tree_add_vertex(T, q, parent) {
 // }
 
 function random_config() {
-    var x = Math.random()*(robot_boundary[1][0]-robot_boundary[0][0])+robot_boundary[0][0];
-    var z = Math.random()*(robot_boundary[1][2]-robot_boundary[0][2])+robot_boundary[0][2];
+    // EDIT: inserted +4 and -2 because robot_boundary doesn't go to corners
+    var x = Math.random()*(robot_boundary[1][0]-robot_boundary[0][0]+4)+robot_boundary[0][0]-2;
+    var z = Math.random()*(robot_boundary[1][2]-robot_boundary[0][2]+4)+robot_boundary[0][2]-2;
     var rot = Math.random()*Math.PI*2;
     var config = [x, 0, z, 0, rot, 0];
     for (var i=6; i<q_L; i++) {
