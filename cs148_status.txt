@@ -22,15 +22,18 @@
  comment: good work
  comment: note Jacobian is 6xN for pseudoinverse, even though only upper three rows are needed for multiplication of endeffector displacement
  
- Assignment 7: DUE
+ Assignment 7: CHECK
  error: branch not found
  regrade: failure on public test with s world
  comment: randomization does not sufficiently sample configuration space
  warning: failure on private test with crawler
  warning: failure on private test with urdf_example
+ regrade: working
+ warning: failure on private test with crawler
+ warning: failure on private test with urdf_example
  
  Assignment 8: CHECK
  
- Current grade: B (6/7 assignments completed)
+ Final grade: A (7/7 assignments completed)
  
 
